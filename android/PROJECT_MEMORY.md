@@ -5,93 +5,88 @@
 - Product: Modular AI Vision & Tracking System
 - Repository: auxz2jz/Slot-16
 - Platform owner: Android
-- Planned package/application ID: com.auxz2jz.modularvision
+- Package/application ID: com.auxz2jz.modularvision
+- Project type: cross-platform
+- Windows status: NOT STARTED
 
-## Master rules
+## Mandatory startup
 
-Read `auxz2jz/master-instruction-library/INSTRUCTION_INDEX.md` first, then all mandatory files it references. This project is cross-platform, so the Cross-Platform Collaboration Standard is mandatory.
-
-Emergency recovery commands are conditional. Do not execute them unless their stated trigger occurs or the user explicitly issues one.
+Read `auxz2jz/master-instruction-library/INSTRUCTION_INDEX.md`, all mandatory files it references, and the Cross-Platform Collaboration Standard before development. Emergency recovery commands activate only when their stated condition occurs or the user explicitly issues one.
 
 ## Current state
 
-- Project type: brand-new cross-platform project
-- Android current phase: Foundation 0A
-- Android current status: PLANNED / initialization in progress
-- Android last verified baseline: NONE
-- Android latest candidate: NONE
-- Windows status: NOT STARTED
-- Existing verified Android source: NONE
+- Android phase: Foundation 0A
+- Android status: CANDIDATE — AWAITING USER VERIFICATION
+- Current candidate: v0.1.0
+- Last user-verified baseline: NONE
+- Candidate source commit: `a7aaccb2c84bed577d0e71506a943228fffd5ca8`
+- Candidate source tree: `7b61862a9341212e5ac6ae04ea8e1bb6d52bc375`
+- CI run: 36427037252 — SUCCESS
+- Artifact ID: 10972165454
+- APK SHA-256: `df051cb71d3dbf44b06be786746845d1c9f089ed277c9c62c8761d8dbdeba111`
+- Artifact ZIP SHA-256: `cb37f48a511c3b7409a44858534416868c8bd25b0126881ab6b4d2804ca96f57`
 
-## User-approved product direction
+## Product direction
 
-Build a modular local AI surveillance/computer-vision platform that accepts cameras/video/images and eventually supports motion detection, object detection, persistent tracking, ALPR, optional face recognition, zones/tripwires, event intelligence, history/search, recording/snapshots, engine fallback, and detailed decision diagnostics.
+Build a modular local AI surveillance/computer-vision platform for cameras, video, and images. The long-term product includes motion/preprocessing, object detection, persistent tracking, plate recognition, optional face recognition, zones/tripwires, event intelligence, history/search, snapshots/clips, engine health, confidence-based multi-engine verification/fallback, and reconstructable decision diagnostics.
 
-The program owns the workflow. Third-party engines sit behind adapters and normalized product data models.
+The application owns the workflow. Third-party engines stay behind product-owned adapters and normalized result models.
 
-## Current task
+## Foundation 0A implemented
 
-Foundation 0A:
+Actual user-facing controls:
+- **Test This Version**
+- **Export Diagnostics**
 
-1. establish durable project/shared/platform documentation;
-2. checkpoint the empty starting state;
-3. create Android project scaffold using a toolchain already proven in the user's recent Android repositories;
-4. implement diagnostics foundation before sophisticated AI;
-5. create product-owned engine/data interfaces;
-6. add a minimal Test This Version workflow;
-7. build via GitHub Actions;
-8. record build result as candidate only;
-9. await physical user verification before establishing a verified baseline.
+Actual automatic/background behavior:
+- diagnostic session initialization on app start
+- persistent JSONL event writes
+- bounded recent event buffer
+- log rotation
+- guided-test persistence/restore
+- diagnostics package generation/validation
+- uncaught-crash preservation followed by normal Android crash handling
 
-## Proven Android build pattern selected
+Product-owned contracts now exist for:
+- FrameSource
+- DetectorEngine
+- TrackerEngine
+- AlprEngine
+- OcrEngine
+- normalized Detection, Track, PlateObservation, FrameRef, EngineResult
 
-Reference: auxz2jz/Slot-14 latest successful Android CI run on 2026-09-26.
+## Guided test
 
-Pattern:
+Test ID: `android_foundation_0a_v1`
 
-- compile/target SDK 36
-- JDK 17
-- Android Gradle Plugin 9.4.0
-- Gradle 9.6.0
-- GitHub Actions installs Android 36 SDK/build-tools
+- F0A-01 objectively verifies the diagnostic session/log is writable.
+- F0A-02 objectively validates structured event integrity.
+- F0A-03 requires an actual non-zero diagnostics ZIP save; merely opening the save picker cannot pass.
 
-This is a build-pattern reference only; Slot-14 application code is not being copied into this project.
+The user can report **Expected Behavior Failed** during testing.
 
-## Planned Foundation 0A controls/workflows
+## Build history / first real failures
 
-The first Android candidate should contain only controls justified by foundation functionality:
+1. Early workflow runs failed before jobs started because the SDK shell command was written as invalid YAML.
+2. An attempted text replacement did not alter the actual workflow because it matched escaped newline text rather than real line breaks.
+3. The workflow was then replaced directly with the known-working Slot-14 block-scalar pattern plus the Android subdirectory. Run 5 built successfully.
+4. Before checkpointing, crash persistence was found to bypass the standard diagnostic redactor. The smallest correction routed crash message/stack text through the same sanitizer.
+5. Run 6 after that privacy correction completed successfully and is the retained v0.1.0 candidate.
 
-- Test This Version
-- Export Diagnostics
-- simple status/about information
+## Known limitations
 
-No fake camera, AI, tracking, ALPR, or recording controls should be added before those subsystems exist.
-
-## Architecture decisions
-
-- Android code stays under `android/`.
-- Windows code is protected and not owned by this worker.
-- Shared product information stays under `shared/`.
-- Core contracts are product-owned.
-- Diagnostics are permanent infrastructure.
-- Guided testing is permanent infrastructure.
-- No camera credentials or tokens are committed.
-- No third-party AI source is merged into the core during Foundation 0A.
-
-## Known bugs
-
-None; no Android candidate exists yet.
-
-## Failed approaches
-
-- A single large batched documentation write was blocked by the connector safety guard. No repository damage occurred. Switched to smaller explicit writes.
-
-## Files/results received
-
-- User supplied the full project concept and requested Master Instruction Library compliance.
-- Slot-16 confirmed empty before initialization.
-- Slot-14 latest CI build confirmed successful and provides the selected starting toolchain pattern.
+- No camera or AI engine is integrated yet.
+- Foundation storage currently covers diagnostics and guided-test state; the broader SQLite/Room event/configuration persistence layer remains a Foundation 0A task.
+- The export used to complete F0A-03 is assembled before the final PASS is recorded. The UI tells the tester to export diagnostics once more if a package containing the completed test-result record is desired.
+- Uncaught-crash preservation exists but its destructive controlled crash test is deferred.
 
 ## Exact next action
 
-Create the remaining Foundation 0A documentation, then add the Android scaffold and diagnostics core. Build it with GitHub Actions and record the result without calling it user-verified.
+The user physically installs and tests v0.1.0:
+1. launch the app;
+2. tap **Test This Version**;
+3. allow F0A-01/F0A-02 automatic checks to complete;
+4. tap **Export Diagnostics** and actually save the ZIP;
+5. confirm the app reports **Foundation test PASS**.
+
+If it passes, record v0.1.0 as the first Android VERIFIED baseline, then finish remaining Foundation 0A persistence/configuration seams before Phase 0B input work. If it fails, inspect the exported diagnostics and fix the first real failure only.
