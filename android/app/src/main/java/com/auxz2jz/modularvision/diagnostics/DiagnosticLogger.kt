@@ -209,8 +209,8 @@ object DiagnosticLogger {
             details = JSONObject()
                 .put("module", module)
                 .put("errorType", throwable::class.java.name)
-                .put("message", redactText(throwable.message ?: ""))
-                .put("stackTrace", redactText(stack))
+                .put("message", sanitizeTextForPersistence(throwable.message ?: ""))
+                .put("stackTrace", sanitizeTextForPersistence(stack))
         )
     }
 
@@ -261,7 +261,7 @@ object DiagnosticLogger {
             ) {
                 output.put(key, "[REDACTED]")
             } else if (value is String) {
-                output.put(key, redactText(value))
+                output.put(key, sanitizeTextForPersistence(value))
             } else {
                 output.put(key, value)
             }
@@ -269,7 +269,7 @@ object DiagnosticLogger {
         return output
     }
 
-    private fun redactText(value: String): String {
+    fun sanitizeTextForPersistence(value: String): String {
         return value
             .replace(Regex("(?i)(password|token|secret|credential)=([^\\s&]+)"), "\$1=[REDACTED]")
             .take(16000)
