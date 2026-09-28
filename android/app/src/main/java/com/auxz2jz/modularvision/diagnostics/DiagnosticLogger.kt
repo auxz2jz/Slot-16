@@ -220,10 +220,10 @@ object DiagnosticLogger {
         return info.versionName ?: "unknown"
     }
 
-    fun appVersionCode(): Long {
+    @Suppress("DEPRECATION")\n    fun appVersionCode(): Long {
         if (!::appContext.isInitialized) return -1L
         val info = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
-        return if (Build.VERSION.SDK_INT >= 28) info.longVersionCode else @Suppress("DEPRECATION") info.versionCode.toLong()
+        return if (Build.VERSION.SDK_INT >= 28) info.longVersionCode else info.versionCode.toLong()
     }
 
     private fun rotateIfNeeded() {
@@ -270,7 +270,7 @@ object DiagnosticLogger {
 
     private fun redactText(value: String): String {
         return value
-            .replace(Regex("(?i)(password|token|secret|credential)=([^\\s&]+)"), "$1=[REDACTED]")
+            .replace(Regex("(?i)(password|token|secret|credential)=([^\\s&]+)"), "\\$1=[REDACTED]")
             .take(16000)
     }
 }
